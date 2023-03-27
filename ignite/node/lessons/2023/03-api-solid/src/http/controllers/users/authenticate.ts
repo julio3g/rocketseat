@@ -16,7 +16,11 @@ export async function authenticate(
 
   try {
     const authenticateUseCase = makeAuthenticateUseCase()
-    await authenticateUseCase.execute({ email, password })
+    const { user } = await authenticateUseCase.execute({ email, password })
+
+    const token = await replay.jwtSign({}, { sign: { sub: user.id } }) // não colocar dados sensíveis no payload => {}
+
+    return replay.status(200).send({ token })
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
       return replay.status(400).send({ message: err.message })
@@ -24,6 +28,4 @@ export async function authenticate(
     throw err
     // replay.status(500).send() // TODO: fix me
   }
-
-  return replay.status(200).send()
 }

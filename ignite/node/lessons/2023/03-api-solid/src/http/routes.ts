@@ -1,8 +1,11 @@
 import { FastifyInstance } from 'fastify'
-import { authenticate } from './controllers/authenticate'
-import { register } from './controllers/register'
+import { checkInsRoutes } from './controllers/checkIns/routes'
+import { gymsRoutes } from './controllers/gyms/routes'
+
+import { usersRoutes } from './controllers/users/routes'
 
 export async function appRoutes(app: FastifyInstance) {
-  app.post('/users', register)
-  app.post('/sessions', authenticate)
+  app.register(usersRoutes)
+  app.register(gymsRoutes)
+  app.register(checkInsRoutes)
 }
