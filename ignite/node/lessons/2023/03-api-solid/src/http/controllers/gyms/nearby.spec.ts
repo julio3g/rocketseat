@@ -1,7 +1,7 @@
-import { app } from '@/app'
-import { createAndAuthenticateUser } from '@/utils/test/createAndAuthenticateUser'
 import request from 'supertest'
+import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { createAndAuthenticateUser } from '@/utils/test/createAndAuthenticateUser'
 
 describe('Nearby Gyms (e2e)', () => {
   beforeAll(async () => {
@@ -13,7 +13,8 @@ describe('Nearby Gyms (e2e)', () => {
   })
 
   it('should be able list nearby gyms', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    // parametro true indica que o usuario eh um admin, que eh o unico que pode validar um check-in
+    const { token } = await createAndAuthenticateUser(app, true)
 
     await request(app.server)
       .post('/gyms')
