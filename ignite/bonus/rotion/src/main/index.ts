@@ -1,10 +1,13 @@
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, shell } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
+import path from 'node:path'
 import { createFileRoute, createURLRoute } from 'electron-router-dom'
-import { join, resolve } from 'node:path'
-import icon from '../../resources/icon.png?asset'
+import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+
+import { createTray } from './tray'
+import { createShortcuts } from './shortcuts'
 
 import './ipc'
+import './store'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -18,16 +21,19 @@ function createWindow(): void {
       x: 20,
       y: 20,
     },
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'linux'
+      ? {
+          icon: path.join(__dirname, '../../build/icon.png'),
+        }
+      : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
   })
 
-  if (process.platform === 'darwin') {
-    app.dock.setIcon(resolve(__dirname, 'icon.png'))
-  }
+  createTray(mainWindow)
+  createShortcuts(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -40,19 +46,23 @@ function createWindow(): void {
 
   const devServerURL = createURLRoute(
     process.env.ELECTRON_RENDERER_URL!,
-    'main'
+    'main',
   )
 
   const fileRoute = createFileRoute(
-    join(__dirname, '../renderer/index.html'),
-    'main'
+    path.join(__dirname, '../renderer/index.html'),
+    'main',
   )
 
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(devServerURL)
   } else {
     mainWindow.loadFile(...fileRoute)
   }
+}
+
+if (process.platform === 'darwin') {
+  app.dock.setIcon(path.resolve(__dirname, 'icon.png'))
 }
 
 app.whenReady().then(() => {
