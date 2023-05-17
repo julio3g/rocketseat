@@ -1,10 +1,8 @@
-import { BrowserWindow, Menu, nativeImage, Tray } from 'electron'
+import { BrowserWindow, Menu, Tray } from 'electron'
+import path from 'node:path'
 
 export function createTray(window: BrowserWindow) {
-  // const tray = new Tray(path.resolve(__dirname, 'rotionTemplate.png'))
-  const tray = new Tray(
-    nativeImage.createFromPath('../../resources/rotionTemplate.png')
-  )
+  const tray = new Tray(path.resolve(__dirname, 'rotionTemplate.png'))
 
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Rotion', enabled: false },

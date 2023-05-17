@@ -16,6 +16,14 @@ const config = {
   framework: {
     name: '@storybook/react-vite',
     options: {}
+  },
+  "features": {
+    "storyStoreV7": true
+  },
+  viteFinal: (config, {configType}) => {
+    if(configType === 'PRODUCTION') {
+      config.base = '/05-design-system/' // como esta usando o git pages usar o nome do repo
+    }
   }
 };
 export default config;

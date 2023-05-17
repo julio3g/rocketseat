@@ -1,11 +1,9 @@
-import Document from '@tiptap/extension-document'
 import Highlight from '@tiptap/extension-highlight'
-import Image from '@tiptap/extension-image'
-import Placeholder from '@tiptap/extension-placeholder'
-import TaskItem from '@tiptap/extension-task-item'
 import Typography from '@tiptap/extension-typography'
-import { EditorContent, useEditor } from '@tiptap/react'
+import Placeholder from '@tiptap/extension-placeholder'
+import Document from '@tiptap/extension-document'
 import StarterKit from '@tiptap/starter-kit'
+import { EditorContent, useEditor } from '@tiptap/react'
 
 export interface OnContentUpdatedParams {
   title: string
@@ -25,18 +23,6 @@ export function Editor({ content, onContentUpdated }: EditorProps) {
       }),
       StarterKit.configure({
         document: false,
-      }),
-      Image.configure({
-        inline: true,
-        allowBase64: true,
-        HTMLAttributes: {
-          class: 'my-custom-class',
-        },
-      }),
-      TaskItem.configure({
-        HTMLAttributes: {
-          class: 'my-custom-class2',
-        },
       }),
       Highlight,
       Typography,
@@ -60,7 +46,6 @@ export function Editor({ content, onContentUpdated }: EditorProps) {
     },
     content,
     autofocus: 'end',
-
     editorProps: {
       attributes: {
         class: 'focus:outline-none prose prose-invert prose-headings:mt-0',
@@ -68,5 +53,5 @@ export function Editor({ content, onContentUpdated }: EditorProps) {
     },
   })
 
-  return <EditorContent className='w-[65ch]' editor={editor} />
+  return <EditorContent className="w-[65ch]" editor={editor} />
 }
