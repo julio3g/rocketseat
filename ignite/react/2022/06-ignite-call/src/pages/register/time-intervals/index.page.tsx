@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
 } from '@ignite-ui/react'
+import { useRouter } from 'next/router'
 import { ArrowRight } from 'phosphor-react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -31,7 +32,7 @@ const timeIntervalsFormSchema = z.object({
         enabled: z.boolean(),
         startTime: z.string(),
         endTime: z.string(),
-      })
+      }),
     )
     .length(7)
     .transform((interval) => interval.filter((interval) => interval.enabled))
@@ -51,12 +52,12 @@ const timeIntervalsFormSchema = z.object({
       (intervals) => {
         return intervals.every(
           (interval) =>
-            interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes
+            interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes,
         )
       },
       {
         message: 'O horário de término deve ser pelo 1h distante do início',
-      }
+      },
     ),
 })
 
@@ -85,6 +86,7 @@ export default function TimeIntervals() {
     },
   })
 
+  const router = useRouter()
   const weekDays = getWeekDays()
 
   const { fields } = useFieldArray({
@@ -98,6 +100,7 @@ export default function TimeIntervals() {
     const { intervals } = data as TimeIntervalsFormOutput
 
     await api.post('users/time-intervals', { intervals })
+    await router.push('/register/update-profile')
   }
 
   return (

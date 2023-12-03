@@ -58,7 +58,7 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       })
       setTransactions((state) => [response.data, ...state])
     },
-    []
+    [],
   )
 
   useEffect(() => {

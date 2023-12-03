@@ -10,13 +10,13 @@ const timeIntervalsBodySchema = z.object({
       weekDay: z.number(),
       startTimeInMinutes: z.number(),
       endTimeInMinutes: z.number(),
-    })
+    }),
   ),
 })
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
     return res.status(405).end()
@@ -24,7 +24,7 @@ export default async function handler(
   const session = await unstable_getServerSession(
     req,
     res,
-    buildNextAuthOptions(req, res)
+    buildNextAuthOptions(req, res),
   )
 
   if (!session) {
@@ -33,9 +33,21 @@ export default async function handler(
 
   const { intervals } = timeIntervalsBodySchema.parse(req.body)
 
-  await prisma.userTimeInterval.create()
+  // SLQLite
+  await Promise.all(
+    intervals.map((interval) => {
+      return prisma.userTimeInterval.create({
+        data: {
+          week_day: interval.weekDay,
+          time_start_in_minutes: interval.startTimeInMinutes,
+          time_end_in_minutes: interval.endTimeInMinutes,
+          user_id: session.user?.id,
+        },
+      })
+    }),
+  )
 
-  return res.json({
-    session,
-  })
+  // await prisma.userTimeInterval.create()
+
+  return res.status(201).end()
 }

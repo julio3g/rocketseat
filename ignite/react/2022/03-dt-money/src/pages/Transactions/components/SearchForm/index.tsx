@@ -18,7 +18,7 @@ function SearchFormComponent() {
     TransactionsContext,
     (context) => {
       return context.fetchTransactions
-    }
+    },
   )
 
   const {
@@ -36,11 +36,11 @@ function SearchFormComponent() {
   return (
     <SearchFormContainer onSubmit={handleSubmit(handleSearchTransactions)}>
       <input
-        type='text'
-        placeholder='Busque por transações'
+        type="text"
+        placeholder="Busque por transações"
         {...register('query')}
       />
-      <button type='submit' disabled={isSubmitting}>
+      <button type="submit" disabled={isSubmitting}>
         <MagnifyingGlass size={20} /> Buscar
       </button>
     </SearchFormContainer>
